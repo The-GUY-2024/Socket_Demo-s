@@ -54,10 +54,19 @@ class Server:
         # accept connection from incoming client 
         self.cli_socket, add = self.s.accept();
         print("client connected from: " + str(add));
+        
+        #interact between client & server 
         self.Recv_msg();
 
         self.Send_msg();
         
+        #close socket with client 
+        self.cli_socket.close()
+
+        #Close socket
+        self.s.close()
+
+
     def Recv_msg(self):
         #Recive message from client
         msg = self.cli_socket.recv(1024).decode('utf-8'); 
