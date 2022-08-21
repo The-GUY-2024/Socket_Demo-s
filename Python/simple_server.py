@@ -7,8 +7,15 @@ class Server:
         self.IP = self.get_ip();
         self.port = 100;
         self.s = ""
-        self.S_call();
-        
+        self.cli_socket = ""
+        try:
+            self.S_call();
+        except KeyboardInterrupt:
+            print("\nKeyboardInterrupt system closing!\n");
+            self.s.close();
+            print("Socket connection is close!\n")            
+            sys.exit()
+
 #this function get the interface ip address 
     def get_ip(self):
         
@@ -45,15 +52,22 @@ class Server:
         self.s.listen(5);
 
         # accept connection from incoming client 
-        cli_socket, add = self.s.accept();
+        self.cli_socket, add = self.s.accept();
         print("client connected from: " + str(add));
+        self.Recv_msg();
 
+        self.Send_msg();
+        
+    def Recv_msg(self):
         #Recive message from client
-        msg = cli_socket.recv(1024).decode('utf-8'); 
-        print("Client send: " + str(msg))
-
+        msg = self.cli_socket.recv(1024).decode('utf-8'); 
+        print("Client send: " + str(msg) + "\n")
+    
+    def Send_msg(self):
+        msg = "Hello from server"
         #send data to client 
-
+        self.cli_socket.send(msg.encode());
+    
 
 
 if __name__ == "__main__":
