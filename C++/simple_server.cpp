@@ -9,6 +9,7 @@
 #include <iostream>
 #include <sstream>
 #include <string>
+#include <arpa/inet.h>
 
 class Server{
     public:
@@ -16,6 +17,10 @@ class Server{
             Call_socket();
             //Recive Message 
             rcv_msg();
+            
+
+            //Send message 
+            Send_msg();
             
             //Close socket 
 
@@ -26,6 +31,9 @@ class Server{
     private:
         //Server network information
         
+
+        //ip address
+        char ip[20] = "192.168.0.7";
         //Port number 
         int port = 100;
 
@@ -60,8 +68,8 @@ class Server{
         }
         //Send Message to client 
         void Send_msg(){
-            
-
+            char msg[25] = "Hello from server";
+            send(NewSock,msg, 1024,0);
             std::cout << "Message send to client " << std::endl;
         }
 
@@ -97,7 +105,7 @@ class Server{
             //Declaring the  network packet family
             serv_addr.sin_family = AF_INET;
             //Declaring the socket IP addres
-            serv_addr.sin_addr.s_addr = INADDR_ANY;
+            serv_addr.sin_addr.s_addr = inet_addr(ip);
             //Declaring the socket PORT
             serv_addr.sin_port = htons(port);
 
