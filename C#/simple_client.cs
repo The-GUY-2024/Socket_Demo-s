@@ -1,4 +1,4 @@
-//Unfinish
+//Local network client
 
 using System;
 using System.Net;
@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Runtime.InteropServices;
 
 namespace Simple_Client
 {
@@ -45,7 +46,7 @@ namespace Simple_Client
             return IP;
         }
 
-        public static void StartClient()
+        public static async void StartClient()
         {
             //Ip & port declaration for the socket
             IPAddress IP = Getip();
@@ -57,10 +58,48 @@ namespace Simple_Client
             //Create the  TCP/IP client socket
             Socket client = new Socket(IP.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
 
-            client.Connect(ClientEP);
+           
+            try
+            {
+                client.Connect(ClientEP);
 
-            Console.WriteLine("Socket connected to {0}" , client.RemoteEndPoint.ToString());
-        
+                Console.WriteLine("Socket connected to {0}", client.RemoteEndPoint.ToString());
+
+                try
+                {
+
+                    byte[] bytes = new byte[1024];
+                    int bytesRec = client.Receive(bytes);
+
+                    Console.WriteLine("Server send: " + Encoding.ASCII.GetString(bytes, 0, bytesRec));
+
+                    //Shut down socket at both side
+                    Console.WriteLine("Closing connection");
+
+
+                    client.Shutdown(SocketShutdown.Both);
+                    client.Close();
+                }
+                catch (ArgumentNullException ane)
+                {
+                    Console.WriteLine("ArgumentNullException: {0}", ane.ToString());
+                }
+                catch (SocketException se)
+                {
+                    Console.WriteLine("Socket Exception: {0} ", se.ToString());
+
+                }
+                catch (Exception e) {
+                    Console.WriteLine("Unexpected exeption : {0} ", e.ToString());
+                }
+
+
+
+            }catch (Exception e)
+            {
+                Console.WriteLine(e.ToString());    
+            }    
+
         }
 
 
