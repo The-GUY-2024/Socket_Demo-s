@@ -1,5 +1,4 @@
-//unfinish
-
+//Local network server 
 using System;
 using System.Net;
 using System.Net.Sockets;
@@ -71,15 +70,37 @@ namespace Simple_Server
                 Server.Listen(10);
 
                 //Accepting client to the server socket 
-                var handler = await Server.AcceptAsync();
+                var handler = Server.Accept();
+                
+
+                Console.WriteLine("Client connected from: " + handler.RemoteEndPoint);
 
 
-                Console.WriteLine("Client connected from: " + handler);
+                //Sending data over socket to client 
+
+                byte[] msg = Encoding.ASCII.GetBytes("hello from server");
+                byte[] bytes = new byte[1024];
+
+            //send data to the client
+                int byteCount = Server.Send(msg);
+
+
+                //Shuth down client socket and server socket 
+
+
+
+
+                Server.Shutdown(SocketShutdown.Both);
+                Server.Close();
+             
             }
             catch (Exception e)
             {
                 Console.WriteLine(e.ToString());
             }
+
+            Console.WriteLine("Press enter ");
+            Console.ReadKey();
         }
     }
 
@@ -90,7 +111,7 @@ namespace Simple_Server
         static void Main(string[] args)
         {
             Server.StartServer();
-            Console.ReadLine();
+           
         }
     }
 }
